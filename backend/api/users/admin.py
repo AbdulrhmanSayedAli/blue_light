@@ -9,7 +9,7 @@ from common.audit.variables import audit_fields
 class UserAdmin(BaseUserAdmin, AuditModelAdmin):
     use_list_display_getter = False
     list_display = (
-        "full_name",
+        "username",
         "image",
         "city",
         "univeristy",
@@ -19,6 +19,52 @@ class UserAdmin(BaseUserAdmin, AuditModelAdmin):
         "is_staff",
         "is_superuser",
         *audit_fields,
+    )
+    use_fieldsets_getter = False
+    fieldsets = (
+        (
+            "Personal Info",
+            {
+                "fields": (
+                    "phone_number",
+                    "whatsapp",
+                    "image",
+                    "about",
+                )
+            },
+        ),
+        (
+            "University & Specialization",
+            {
+                "fields": (
+                    "univeristy",
+                    "specialization",
+                    "city",
+                )
+            },
+        ),
+        ("Device Info", {"fields": ("device_id",)}),
+        (
+            "Permissions",
+            {
+                "fields": (
+                    "is_active",
+                    "is_staff",
+                    "is_superuser",
+                    "groups",
+                    "user_permissions",
+                )
+            },
+        ),
+        (
+            "Important Dates",
+            {
+                "fields": (
+                    "last_login",
+                    "date_joined",
+                )
+            },
+        ),
     )
 
 

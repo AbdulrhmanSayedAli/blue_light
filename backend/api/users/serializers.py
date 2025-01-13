@@ -39,7 +39,7 @@ class GetUserSerializer(AuditSerializer):
         fields = (
             "id",
             "phone_number",
-            "full_name",
+            "username",
             "univeristy",
             "specialization",
             "city",
@@ -53,3 +53,32 @@ class GetUserSerializer(AuditSerializer):
     univeristy = UniveristySerializer()
     specialization = SpecializationSerializer()
     image = CustomImageSerializerField()
+
+
+class RegisterSerializer(AuditSerializer):
+    class Meta:
+        model = User
+        fields = [
+            "phone_number",
+            "device_id",
+            "password",
+            "username",
+            "univeristy",
+            "specialization",
+            "city",
+            "device_id",
+            "image",
+        ]
+        extra_kwargs = {
+            "username": {"required": True},
+            "phone_number": {"required": True},
+            "device_id": {"required": True},
+            "password": {"required": True},
+        }
+
+    def create(self, validated_data):
+        user = User.objects.create_user(**validated_data)
+        return user
+
+    def to_representation(self, instance):
+        return GetUserSerializer(instance, context=self.context).data

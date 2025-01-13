@@ -8,6 +8,7 @@ class PhoneNumberBackend(BaseBackend):
     def authenticate(self, request, phone_number=None, password=None, device_id=None, **kwargs):
         try:
             user = User.objects.get(phone_number=phone_number, device_id=device_id)
+            print(user)
             if user.check_password(password):
                 return user
         except User.DoesNotExist:

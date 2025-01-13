@@ -12,6 +12,7 @@ from rest_framework.exceptions import ValidationError
 
 
 def createToken(user):
+    AuthToken.objects.filter(user=user).delete()
     instance, token = AuthToken.objects.create(user)
     return token
 
@@ -35,6 +36,7 @@ class LoginView(KnoxLoginView):
         responses={200: ""},
     )
     def post(self, request):
+        print("asdla,ds;asd")
         phone_number = request.data.get("phone_number")
         device_id = request.data.get("device_id")
         password = request.data.get("password")
@@ -42,7 +44,8 @@ class LoginView(KnoxLoginView):
         serializer = LoginSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        user = authenticate(request, username=phone_number, password=password, device_id=device_id)
+        user = authenticate(request, phone_number=phone_number, password=password, device_id=device_id)
+        print(user)
         if user:
             serializer = GetUserSerializer(user)
             return Response({"token": createToken(user), "user": serializer.data})

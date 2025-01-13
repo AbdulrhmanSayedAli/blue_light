@@ -27,8 +27,7 @@ class City(HistoricalAuditModel):
 
 
 class User(AbstractUser, HistoricalAuditModel):
-    phone_number = PhoneNumberField(null=True, blank=True)
-    full_name = models.CharField(max_length=300, null=True, blank=True, default="")
+    phone_number = PhoneNumberField(null=True, blank=True, unique=True)
     univeristy = models.ForeignKey(Univeristy, on_delete=models.SET_NULL, null=True, blank=True, related_name="users")
     specialization = models.ForeignKey(
         Specialization, on_delete=models.SET_NULL, null=True, blank=True, related_name="users"
