@@ -1,6 +1,7 @@
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from knox.views import LoginView as KnoxLoginView
+from knox.views import LogoutView as KnoxLogoutView
 from rest_framework import permissions
 from knox.models import AuthToken
 from rest_framework.response import Response
@@ -51,3 +52,13 @@ class LoginView(KnoxLoginView):
             return Response({"token": createToken(user), "user": serializer.data})
 
         raise ValidationError(_("Invalid login."))
+
+
+class LogoutView(KnoxLogoutView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    @swagger_auto_schema(
+        responses={204: "no content"},
+    )
+    def post(self, request, format=None):
+        return super().post(request, format)
