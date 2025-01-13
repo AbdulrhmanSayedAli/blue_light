@@ -1,0 +1,60 @@
+version: "3"
+
+networks:
+  default:
+    external:
+      name: blue_light-network
+
+services:
+  db:
+    image: postgres:14.5
+    env_file:
+      - .env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - postgres_backups:/backups
+    ports:
+      - "5435:5432"
+
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+  api: &api
+    platform: linux/amd64
+    build:
+      context: backend
+    env_file:
+      - .env
+    volumes:
+      - ./backend:/home/blue_light
+      - ./backend/storage:/storage
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+      - redis
+
+  celeryworker:
+    <<: *api
+    ports: []
+    command: bash -c "cd api;
+      poetry run celery -A api worker -l info"
+    depends_on:
+      - api
+
+  celerybeat:
+    <<: *api
+    ports: []
+    command: bash -c "cd api;
+      poetry run celery -A api beat -l info --pidfile=''"
+    depends_on:
+      - api
+
+volumes:
+  postgres_data: {}
+  postgres_backups: {}
+  redis_data:
