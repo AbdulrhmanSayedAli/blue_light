@@ -57,6 +57,8 @@ INSTALLED_APPS = [
     "corsheaders",
     "rest_framework",
     "knox",
+    "drf_yasg",
+    "myauth",
     # "rangefilter",
 ]
 
@@ -245,14 +247,24 @@ SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 CSRF_TRUSTED_ORIGINS = [env("API_ROOT_URL")]
 
 
+AUTHENTICATION_BACKENDS = [
+    "myauth.authenticator.PhoneNumberBackend",
+    "django.contrib.auth.backends.ModelBackend",
+]
+
+
 SWAGGER_SETTINGS = {
     "SECURITY_DEFINITIONS": {"Token": {"type": "apiKey", "name": "Authorization", "in": "header"}},
 }
 
+REST_KNOX = {
+    "TOKEN_TTL": None,  # Disable token expiration
+    "AUTO_REFRESH": False,  # Optional: Prevent automatic token refresh
+    "USER_SERIALIZER": "knox.serializers.UserSerializer",  # Default serializer
+}
 
-AUTHENTICATION_BACKENDS = [
-    "django.contrib.auth.backends.ModelBackend",
-]
+AUTO_COMPLETE_PARAM = "autocomplete"
+SEARCH_PARAM = "search"
 
 
 if DEBUG:
