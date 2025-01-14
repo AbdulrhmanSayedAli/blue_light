@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     "knox",
     "drf_yasg",
     "myauth",
+    "courses",
     # "rangefilter",
 ]
 
