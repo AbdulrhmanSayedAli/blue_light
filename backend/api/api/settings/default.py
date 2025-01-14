@@ -18,11 +18,8 @@ import environ
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-print(BASE_DIR)
 # Read environment variables
 env = environ.Env()
-environ.Env.read_env(env_file=BASE_DIR / ".env")
-
 # environ.Env.read_env(os.path.join(BASE_DIR, "..", ".env"))
 
 # Quick-start development settings - unsuitable for production
@@ -136,17 +133,7 @@ AUTH_USER_MODEL = "users.User"
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": env("POSTGRES_DB"),
-        "USER": env("POSTGRES_USER"),
-        "PASSWORD": env("POSTGRES_PASSWORD"),
-        "HOST": env("POSTGRES_HOST"),
-        "PORT": env("POSTGRES_PORT"),
-        "OPTIONS": {
-            "sslmode": "require",
-        },
-    }
+    "default": env.db(),
 }
 
 # Password validation
