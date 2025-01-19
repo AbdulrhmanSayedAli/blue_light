@@ -65,3 +65,36 @@ class File(HistoricalAuditModel):
 
     def __str__(self):
         return self.name
+
+
+class Quiz(HistoricalAuditModel):
+    name = models.CharField(max_length=300)
+    image = models.ImageField(upload_to="courses/quizzes/", null=True, blank=True)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="quizzes")
+    is_public = models.BooleanField(default=False)
+    info = models.TextField(null=True, blank=True)
+    info_title = models.CharField(max_length=300, null=True, blank=True)
+    price = models.DecimalField(decimal_places=2, max_digits=8, validators=[MinValueValidator(0.01)])
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name_plural = "Quizzes"
+
+
+class Question(HistoricalAuditModel):
+    text = models.CharField(max_length=400)
+    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, related_name="questions")
+
+    def __str__(self):
+        return self.text
+
+
+class Answer(HistoricalAuditModel):
+    text = models.CharField(max_length=400)
+    is_true_answer = models.BooleanField(default=False)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name="answers")
+
+    def __str__(self):
+        return self.text

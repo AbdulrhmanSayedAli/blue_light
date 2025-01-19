@@ -41,10 +41,10 @@ INTERNAL_IPS = ["127.0.0.1"]
 # Application definition
 
 INSTALLED_APPS = [
-    # "phonenumber_field",
-    # "modeltranslation",
-    # "safedelete",
-    # "simple_history",
+    "phonenumber_field",
+    "modeltranslation",
+    "safedelete",
+    "simple_history",
     "users",
     "django.contrib.admin",
     "django.contrib.auth",
@@ -61,7 +61,8 @@ INSTALLED_APPS = [
     "myauth",
     "courses",
     "home",
-    # "rangefilter",
+    "nested_inline",
+    "rangefilter",
 ]
 
 MIDDLEWARE = [
