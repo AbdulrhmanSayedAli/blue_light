@@ -1,5 +1,5 @@
 from common.audit.serializer import AuditSerializer
-from .models import Course, CourseGroup, Video, File
+from .models import Course, CourseGroup, Video, File, Quiz
 from users.serializers import GetUserSerializer
 from common.rest_framework.serializers import CustomImageSerializerField
 
@@ -47,6 +47,22 @@ class FileSerializer(AuditSerializer):
     image = CustomImageSerializerField()
 
 
+class QuizSerializer(AuditSerializer):
+    class Meta:
+        model = Quiz
+        fields = (
+            "id",
+            "name",
+            "image",
+            "info",
+            "info_title",
+            "price",
+            "is_public",
+        )
+
+    image = CustomImageSerializerField()
+
+
 class CourseSerializer(AuditSerializer):
     class Meta:
         model = Course
@@ -61,6 +77,7 @@ class CourseSerializer(AuditSerializer):
             "groups",
             "videos",
             "files",
+            "quizzes",
             "price",
         )
 
@@ -69,6 +86,7 @@ class CourseSerializer(AuditSerializer):
     groups = CourseGroupSerializer(many=True)
     videos = VideoSerializer(many=True)
     files = FileSerializer(many=True)
+    quizzes = QuizSerializer(many=True)
 
 
 class CourseListSerializer(AuditSerializer):
