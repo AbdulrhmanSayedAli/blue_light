@@ -13,6 +13,9 @@ class Course(HistoricalAuditModel):
     teacher = models.ForeignKey(User, on_delete=models.CASCADE, related_name="courses")
     duration_in_days = models.IntegerField()
 
+    def __str__(self):
+        return self.name
+
     @property
     def price(self) -> float:
         videos_price = sum(video.price for video in self.videos.all())
@@ -24,6 +27,9 @@ class CourseGroup(HistoricalAuditModel):
     name = models.CharField(max_length=300)
     image = models.ImageField(null=True, blank=True)
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="groups")
+
+    def __str__(self):
+        return self.name
 
 
 class Video(HistoricalAuditModel):
@@ -43,6 +49,9 @@ class Video(HistoricalAuditModel):
     price = models.DecimalField(decimal_places=2, max_digits=8, validators=[MinValueValidator(0.01)])
     is_public = models.BooleanField(default=False)
 
+    def __str__(self):
+        return self.name
+
 
 class File(HistoricalAuditModel):
     name = models.CharField(max_length=300)
@@ -53,3 +62,6 @@ class File(HistoricalAuditModel):
     info = models.TextField()
     price = models.DecimalField(decimal_places=2, max_digits=8, validators=[MinValueValidator(0.01)])
     is_public = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.name

@@ -9,18 +9,27 @@ class Univeristy(HistoricalAuditModel):
     name = models.CharField(max_length=200)
     image = models.ImageField(upload_to="univeristies/", null=True, blank=True)
 
+    def __str__(self):
+        return self.name
+
     class Meta:
-        verbose_name_plural = "Univeristies/"
+        verbose_name_plural = "Univeristies"
 
 
 class Specialization(HistoricalAuditModel):
     name = models.CharField(max_length=200)
     image = models.ImageField(upload_to="specializations/", null=True, blank=True)
 
+    def __str__(self):
+        return self.name
+
 
 class City(HistoricalAuditModel):
     name = models.CharField(max_length=200)
     image = models.ImageField(upload_to="cities/", null=True, blank=True)
+
+    def __str__(self):
+        return self.name
 
     class Meta:
         verbose_name_plural = "Cities"
