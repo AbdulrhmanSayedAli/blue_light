@@ -34,7 +34,7 @@ class CourseGroup(HistoricalAuditModel):
 
 class Video(HistoricalAuditModel):
     name = models.CharField(max_length=300)
-    duration = models.DurationField()
+    duration = models.DurationField(null=True, blank=True)
     image = models.ImageField(upload_to="courses/videos/", null=True, blank=True)
     url = models.URLField()
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="videos")
@@ -45,7 +45,7 @@ class Video(HistoricalAuditModel):
         blank=True,
         related_name="videos",
     )
-    info = models.TextField()
+    info = models.TextField(null=True, blank=True)
     price = models.DecimalField(decimal_places=2, max_digits=8, validators=[MinValueValidator(0.01)])
     is_public = models.BooleanField(default=False)
 
@@ -55,11 +55,11 @@ class Video(HistoricalAuditModel):
 
 class File(HistoricalAuditModel):
     name = models.CharField(max_length=300)
-    pages_count = models.IntegerField(default=0, validators=[MinValueValidator(0)])
+    pages_count = models.IntegerField(default=0, null=True, blank=True, validators=[MinValueValidator(0)])
     image = models.ImageField(upload_to="courses/files/", null=True, blank=True)
     file = models.FileField(upload_to="courses/files/", null=True, blank=True)
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="files")
-    info = models.TextField()
+    info = models.TextField(null=True, blank=True)
     price = models.DecimalField(decimal_places=2, max_digits=8, validators=[MinValueValidator(0.01)])
     is_public = models.BooleanField(default=False)
 
