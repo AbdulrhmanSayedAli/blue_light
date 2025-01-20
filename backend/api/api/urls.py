@@ -22,6 +22,7 @@ urlpatterns = (
         path("api/users/", include("users.urls")),
         path("api/auth/", include("myauth.urls")),
         path("api/courses/", include("courses.urls")),
+        path("api/home/", include("home.urls")),
         path("swagger/", schema_view.with_ui("swagger", cache_timeout=0), name="schema-swagger-ui"),
     ]
     + staticfiles_urlpatterns()
