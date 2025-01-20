@@ -39,7 +39,6 @@ class GetUserSerializer(AuditSerializer):
         fields = (
             "id",
             "phone_number",
-            "username",
             "full_name",
             "univeristy",
             "specialization",
@@ -63,7 +62,6 @@ class RegisterSerializer(AuditSerializer):
             "phone_number",
             "device_id",
             "password",
-            "username",
             "full_name",
             "univeristy",
             "specialization",
@@ -72,7 +70,6 @@ class RegisterSerializer(AuditSerializer):
             "image",
         ]
         extra_kwargs = {
-            "username": {"required": True},
             "full_name": {"required": True},
             "phone_number": {"required": True},
             "device_id": {"required": True},
@@ -80,6 +77,7 @@ class RegisterSerializer(AuditSerializer):
         }
 
     def create(self, validated_data):
+        validated_data["username"] = validated_data["device_id"]
         user = User.objects.create_user(**validated_data)
         return user
 

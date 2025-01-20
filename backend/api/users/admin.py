@@ -9,7 +9,7 @@ from common.audit.variables import audit_fields
 class UserAdmin(BaseUserAdmin, AuditModelAdmin):
     use_list_display_getter = False
     list_display = (
-        "username",
+        "full_name",
         "image",
         "city",
         "univeristy",
@@ -27,7 +27,6 @@ class UserAdmin(BaseUserAdmin, AuditModelAdmin):
             {
                 "fields": (
                     "full_name",
-                    "username",
                     "phone_number",
                     "whatsapp",
                     "image",

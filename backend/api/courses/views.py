@@ -7,7 +7,7 @@ from rest_framework import permissions
 class CourseViewSet(ReadOnlyModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
     model = Course
-    search_fields = ["name", "teacher__username"]
+    search_fields = ["name", "teacher__full_name"]
     ordering_fields = ["name", "duration_in_days"]
 
     def get_queryset(self):
