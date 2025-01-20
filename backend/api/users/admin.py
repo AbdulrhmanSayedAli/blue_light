@@ -26,6 +26,8 @@ class UserAdmin(BaseUserAdmin, AuditModelAdmin):
             "Personal Info",
             {
                 "fields": (
+                    "full_name",
+                    "username",
                     "phone_number",
                     "whatsapp",
                     "image",

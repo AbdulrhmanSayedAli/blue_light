@@ -40,6 +40,7 @@ class GetUserSerializer(AuditSerializer):
             "id",
             "phone_number",
             "username",
+            "full_name",
             "univeristy",
             "specialization",
             "city",
@@ -63,6 +64,7 @@ class RegisterSerializer(AuditSerializer):
             "device_id",
             "password",
             "username",
+            "full_name",
             "univeristy",
             "specialization",
             "city",
@@ -71,6 +73,7 @@ class RegisterSerializer(AuditSerializer):
         ]
         extra_kwargs = {
             "username": {"required": True},
+            "full_name": {"required": True},
             "phone_number": {"required": True},
             "device_id": {"required": True},
             "password": {"required": True},

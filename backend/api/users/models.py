@@ -43,6 +43,7 @@ class User(AbstractUser, HistoricalAuditModel):
     )
     city = models.ForeignKey(City, on_delete=models.SET_NULL, null=True, blank=True, related_name="users")
     device_id = models.CharField(max_length=300)
+    full_name = models.CharField(max_length=300, default="")
     image = models.ImageField(upload_to="users/", null=True, blank=True)
     type = models.IntegerField(choices=UserType.choices, default=UserType.STUDENT)
     whatsapp = PhoneNumberField(null=True, blank=True)
