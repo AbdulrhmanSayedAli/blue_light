@@ -30,6 +30,7 @@ class UserAdmin(BaseUserAdmin, AuditModelAdmin):
                     "whatsapp",
                     "image",
                     "about",
+                    "type",
                 )
             },
         ),
