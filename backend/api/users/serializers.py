@@ -68,7 +68,6 @@ class RegisterSerializer(AuditSerializer):
         model = User
         fields = [
             "phone_number",
-            "device_id",
             "password",
             "full_name",
             "univeristy",
@@ -88,6 +87,22 @@ class RegisterSerializer(AuditSerializer):
         validated_data["username"] = validated_data["device_id"]
         user = User.objects.create_user(**validated_data)
         return user
+
+    def to_representation(self, instance):
+        return GetUserSerializer(instance, context=self.context).data
+
+
+class ProfileSerializer(AuditSerializer):
+    class Meta:
+        model = User
+        fields = [
+            "phone_number",
+            "full_name",
+            "univeristy",
+            "specialization",
+            "city",
+            "image",
+        ]
 
     def to_representation(self, instance):
         return GetUserSerializer(instance, context=self.context).data

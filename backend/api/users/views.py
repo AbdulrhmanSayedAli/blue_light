@@ -6,6 +6,7 @@ from users.serializers import (
     UniveristySerializer,
     SpecializationSerializer,
     ChangePasswordSerializer,
+    ProfileSerializer,
 )
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -14,7 +15,8 @@ from django.utils.translation import gettext_lazy as _
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from myauth.views import createToken
-from rest_framework.generics import UpdateAPIView
+from rest_framework.generics import UpdateAPIView, RetrieveAPIView
+from rest_framework.permissions import IsAuthenticated
 
 
 class CityViewSet(ReadOnlyModelViewSet):
@@ -79,6 +81,14 @@ class RegisterView(APIView):
 class ChangePasswordView(UpdateAPIView):
     http_method_names = ["put"]
     serializer_class = ChangePasswordSerializer
+
+    def get_object(self):
+        return self.request.user
+
+
+class ProfileView(RetrieveAPIView, UpdateAPIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = ProfileSerializer
 
     def get_object(self):
         return self.request.user
