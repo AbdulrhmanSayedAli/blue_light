@@ -4,8 +4,9 @@ from django.contrib import admin
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.urls import path, include
 from drf_yasg.views import get_schema_view
-from rest_framework import permissions
 from drf_yasg import openapi
+from common.rest_framework.permissions import IsSuperuser
+from rest_framework.authentication import SessionAuthentication
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -13,7 +14,8 @@ schema_view = get_schema_view(
         default_version="v1",
     ),
     public=True,
-    permission_classes=(permissions.AllowAny,),
+    permission_classes=(IsSuperuser,),
+    authentication_classes=[SessionAuthentication],
 )
 
 urlpatterns = (
