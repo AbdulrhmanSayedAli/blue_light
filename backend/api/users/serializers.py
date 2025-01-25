@@ -9,6 +9,7 @@ from django.contrib.auth.hashers import check_password
 from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError
 from django.contrib.auth.hashers import make_password
+from common.rest_framework.serializers import CustomImageSerializerField
 
 
 class CitySerializer(AuditSerializer):
@@ -103,6 +104,8 @@ class ProfileSerializer(AuditSerializer):
             "city",
             "image",
         ]
+
+    image = CustomImageSerializerField(required=False, allow_null=True)
 
     def to_representation(self, instance):
         return GetUserSerializer(instance, context=self.context).data

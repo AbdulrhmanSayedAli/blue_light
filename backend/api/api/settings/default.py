@@ -63,6 +63,7 @@ INSTALLED_APPS = [
     "home",
     "nested_inline",
     "rangefilter",
+    "uploader",
 ]
 
 MIDDLEWARE = [
