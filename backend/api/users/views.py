@@ -1,6 +1,12 @@
 from rest_framework.viewsets import ReadOnlyModelViewSet
 from users.models import City, Univeristy, Specialization
-from users.serializers import CitySerializer, RegisterSerializer, UniveristySerializer, SpecializationSerializer
+from users.serializers import (
+    CitySerializer,
+    RegisterSerializer,
+    UniveristySerializer,
+    SpecializationSerializer,
+    ChangePasswordSerializer,
+)
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -8,6 +14,7 @@ from django.utils.translation import gettext_lazy as _
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from myauth.views import createToken
+from rest_framework.generics import UpdateAPIView
 
 
 class CityViewSet(ReadOnlyModelViewSet):
@@ -67,3 +74,11 @@ class RegisterView(APIView):
                 status=status.HTTP_201_CREATED,
             )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ChangePasswordView(UpdateAPIView):
+    http_method_names = ["put"]
+    serializer_class = ChangePasswordSerializer
+
+    def get_object(self):
+        return self.request.user
