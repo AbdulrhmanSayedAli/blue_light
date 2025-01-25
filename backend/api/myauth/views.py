@@ -37,7 +37,6 @@ class LoginView(KnoxLoginView):
         responses={200: ""},
     )
     def post(self, request):
-        print("asdla,ds;asd")
         phone_number = request.data.get("phone_number")
         device_id = request.data.get("device_id")
         password = request.data.get("password")

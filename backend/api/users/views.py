@@ -7,6 +7,7 @@ from rest_framework import status
 from django.utils.translation import gettext_lazy as _
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
+from myauth.views import createToken
 
 
 class CityViewSet(ReadOnlyModelViewSet):
@@ -60,9 +61,9 @@ class RegisterView(APIView):
     def post(self, request, *args, **kwargs):
         serializer = RegisterSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            user = serializer.save()
             return Response(
-                serializer.data,
+                {"token": createToken(user), **serializer.data},
                 status=status.HTTP_201_CREATED,
             )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
