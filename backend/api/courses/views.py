@@ -2,13 +2,15 @@ from .models import Course
 from .serializers import CourseSerializer, CourseListSerializer
 from rest_framework.viewsets import ReadOnlyModelViewSet
 from rest_framework import permissions
+from .filters import CourseFilter
 
 
 class CourseViewSet(ReadOnlyModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
     model = Course
     search_fields = ["name", "teacher__full_name"]
-    ordering_fields = ["name", "duration_in_days"]
+    ordering_fields = ["name", "duration_in_days", "created_at"]
+    filterset_class = CourseFilter
 
     def get_queryset(self):
         queryset = Course.objects.all()
