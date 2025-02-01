@@ -3,6 +3,8 @@ from django.db import models
 from users.models import User
 from django.core.validators import MinValueValidator
 from django.utils.translation import gettext_lazy as _
+from django.db.models import Sum
+from datetime import timedelta
 
 
 class Course(HistoricalAuditModel):
@@ -15,6 +17,40 @@ class Course(HistoricalAuditModel):
 
     def __str__(self):
         return self.name
+
+    @property
+    def videos_count(self):
+        return len(self.videos.all())
+
+    @property
+    def videos_duration(self):
+        total_duration = self.videos.aggregate(total_duration=Sum("duration"))["total_duration"]
+        return total_duration or timedelta()
+
+    @property
+    def videos_duration_human_readable(self):
+        total_duration = self.videos_duration
+
+        if not total_duration:
+            return "0h 0m 0s"
+
+        # Convert to seconds
+        total_seconds = int(total_duration.total_seconds())
+
+        # Calculate hours, minutes, and seconds
+        hours = total_seconds // 3600
+        minutes = (total_seconds % 3600) // 60
+        seconds = total_seconds % 60
+
+        # Create human-readable string based on values
+        parts = []
+        if hours > 0:
+            parts.append(f"{hours}h")
+        if minutes > 0 or hours > 0:  # Always show minutes if hours exist
+            parts.append(f"{minutes}m")
+        parts.append(f"{seconds}s")
+
+        return " ".join(parts)
 
     @property
     def price(self) -> float:
