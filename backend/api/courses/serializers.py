@@ -4,15 +4,6 @@ from users.serializers import GetUserSerializer
 from common.rest_framework.serializers import CustomImageSerializerField
 
 
-class CourseGroupSerializer(AuditSerializer):
-    class Meta:
-        model = CourseGroup
-        fields = (
-            "id",
-            "name",
-        )
-
-
 class VideoSerializer(AuditSerializer):
     class Meta:
         model = Video
@@ -28,7 +19,18 @@ class VideoSerializer(AuditSerializer):
         )
 
     image = CustomImageSerializerField()
-    group = CourseGroupSerializer()
+
+
+class CourseGroupSerializer(AuditSerializer):
+    class Meta:
+        model = CourseGroup
+        fields = (
+            "id",
+            "name",
+            "videos",
+        )
+
+    videos = VideoSerializer(many=True)
 
 
 class FileSerializer(AuditSerializer):
@@ -75,7 +77,6 @@ class CourseSerializer(AuditSerializer):
             "teacher",
             "duration_in_days",
             "groups",
-            "videos",
             "files",
             "quizzes",
             "price",
@@ -84,7 +85,6 @@ class CourseSerializer(AuditSerializer):
     teacher = GetUserSerializer()
     image = CustomImageSerializerField()
     groups = CourseGroupSerializer(many=True)
-    videos = VideoSerializer(many=True)
     files = FileSerializer(many=True)
     quizzes = QuizSerializer(many=True)
 
