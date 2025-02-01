@@ -80,6 +80,12 @@ class CourseSerializer(AuditSerializer):
             "files",
             "quizzes",
             "price",
+            "videos_price",
+            "files_price",
+            "quizzes_price",
+            "videos_duration",
+            "videos_duration_human_readable",
+            "videos_count",
         )
 
     teacher = GetUserSerializer()
@@ -101,6 +107,12 @@ class CourseListSerializer(AuditSerializer):
             "teacher",
             "duration_in_days",
             "price",
+            "videos_price",
+            "files_price",
+            "quizzes_price",
+            "videos_duration",
+            "videos_duration_human_readable",
+            "videos_count",
         )
 
     teacher = GetUserSerializer()

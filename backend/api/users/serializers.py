@@ -1,5 +1,5 @@
 from common.audit.serializer import AuditSerializer
-from users.models import City, Univeristy, Specialization, User
+from users.models import City, Univeristy, Specialization, User, Experience
 from common.rest_framework.serializers import CustomImageSerializerField
 from django.contrib.auth.password_validation import (
     validate_password as django_validate_password,
@@ -42,6 +42,15 @@ class SpecializationSerializer(AuditSerializer):
         )
 
 
+class ExperienceSerializer(AuditSerializer):
+    class Meta:
+        model = Experience
+        fields = (
+            "id",
+            "text",
+        )
+
+
 class GetUserSerializer(AuditSerializer):
     class Meta:
         model = User
@@ -56,12 +65,14 @@ class GetUserSerializer(AuditSerializer):
             "type",
             "whatsapp",
             "about",
+            "experiences",
         )
 
     city = CitySerializer()
     univeristy = UniveristySerializer()
     specialization = SpecializationSerializer()
     image = CustomImageSerializerField()
+    experiences = ExperienceSerializer(many=True)
 
 
 class RegisterSerializer(AuditSerializer):

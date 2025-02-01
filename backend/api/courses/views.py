@@ -10,6 +10,7 @@ class CourseViewSet(ReadOnlyModelViewSet):
     model = Course
     search_fields = ["name", "teacher__full_name"]
     ordering_fields = ["name", "duration_in_days", "created_at"]
+    ordering = ["-created_at"]
     filterset_class = CourseFilter
 
     def get_queryset(self):
