@@ -10,6 +10,7 @@ from users.serializers import GetUserSerializer
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import authenticate
 from rest_framework.exceptions import ValidationError
+from rest_framework import status
 
 
 def createToken(user):
@@ -57,7 +58,8 @@ class LogoutView(KnoxLogoutView):
     permission_classes = [permissions.IsAuthenticated]
 
     @swagger_auto_schema(
-        responses={204: "no content"},
+        responses={200: "logged out."},
     )
     def post(self, request, format=None):
-        return super().post(request, format)
+        super().post(request, format)
+        return Response("logged out.", status=status.HTTP_200_OK)
