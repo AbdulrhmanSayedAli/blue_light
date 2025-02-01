@@ -23,6 +23,16 @@ class VideoInline(NestedTabularInline):
     fields = ["name", "url", "price"]
 
 
+class CourseGroupnline(NestedTabularInline):
+    model = CourseGroup
+    extra = 1
+    fields = [
+        "name",
+        "image",
+    ]
+    inlines = [VideoInline]
+
+
 class FileInline(NestedTabularInline):
     model = File
     extra = 1
@@ -38,7 +48,7 @@ class QuizInline(NestedTabularInline):
 
 @admin.register(Course)
 class CourseAdmin(NestedModelAdmin, AuditModelAdmin):
-    inlines = [VideoInline, FileInline, QuizInline]
+    inlines = [CourseGroupnline, FileInline, QuizInline]
 
 
 @admin.register(CourseGroup)
