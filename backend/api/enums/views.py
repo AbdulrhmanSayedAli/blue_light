@@ -1,10 +1,5 @@
 from .base.views import EnumReadOnlyViewSet
-from .enums import (
-    OsType,
-    Gender,
-    NotificationObjectType,
-    NotificationTemplateType,
-)
+from .enums import OsType, Gender, NotificationObjectType, NotificationTemplateType, PaymentStatus, UserType
 
 
 class OsTypeReadOnlyViewSet(EnumReadOnlyViewSet):
@@ -21,3 +16,11 @@ class NotificationObjectTypeReadOnlyViewSet(EnumReadOnlyViewSet):
 
 class NotificationTemplateTypeReadOnlyViewSet(EnumReadOnlyViewSet):
     enum = NotificationTemplateType
+
+
+class PaymentStatusReadOnlyViewSet(EnumReadOnlyViewSet):
+    enum = PaymentStatus
+
+
+class UserTypeReadOnlyViewSet(EnumReadOnlyViewSet):
+    enum = UserType

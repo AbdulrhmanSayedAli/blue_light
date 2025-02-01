@@ -12,6 +12,12 @@ class Status(BaseIntEnum):
     INACTIVE = 0
 
 
+class PaymentStatus(BaseIntEnum):
+    PENDING = 0
+    ACCEPTED = 1
+    REJECTED = 2
+
+
 class UserType(BaseIntEnum):
     TEACHER = 1
     STUDENT = 0

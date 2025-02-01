@@ -26,6 +26,7 @@ urlpatterns = (
         path("api/courses/", include("courses.urls")),
         path("api/home/", include("home.urls")),
         path("api/uploader/", include("uploader.urls")),
+        path("api/enums/", include("enums.urls")),
         path("swagger/", schema_view.with_ui("swagger", cache_timeout=0), name="schema-swagger-ui"),
     ]
     + staticfiles_urlpatterns()

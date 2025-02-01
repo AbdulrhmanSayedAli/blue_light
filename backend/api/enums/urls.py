@@ -1,25 +1,33 @@
 from rest_framework import routers
 from .views import (
-    OsTypeReadOnlyViewSet,
-    GenderReadOnlyViewSet,
-    NotificationObjectTypeReadOnlyViewSet,
-    NotificationTemplateTypeReadOnlyViewSet,
+    UserTypeReadOnlyViewSet,
+    PaymentStatusReadOnlyViewSet,
 )
 
 
 router = routers.DefaultRouter()
 
-router.register("os-types", OsTypeReadOnlyViewSet, "os-types")
-router.register("gender", GenderReadOnlyViewSet, "gender")
+# router.register("os-types", OsTypeReadOnlyViewSet, "os-types")
+# router.register("gender", GenderReadOnlyViewSet, "gender")
+# router.register(
+#     "notification-object-type",
+#     NotificationObjectTypeReadOnlyViewSet,
+#     "notification-object-type",
+# )
+# router.register(
+#     "notification-template-type",
+#     NotificationTemplateTypeReadOnlyViewSet,
+#     "notification-template-type",
+# )
 router.register(
-    "notification-object-type",
-    NotificationObjectTypeReadOnlyViewSet,
-    "notification-object-type",
+    "payment-status",
+    PaymentStatusReadOnlyViewSet,
+    "payment-status",
 )
 router.register(
-    "notification-template-type",
-    NotificationTemplateTypeReadOnlyViewSet,
-    "notification-template-type",
+    "user-type",
+    UserTypeReadOnlyViewSet,
+    "user-type",
 )
 
 

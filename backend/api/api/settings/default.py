@@ -64,6 +64,7 @@ INSTALLED_APPS = [
     "nested_inline",
     "rangefilter",
     "uploader",
+    "orders",
 ]
 
 MIDDLEWARE = [
