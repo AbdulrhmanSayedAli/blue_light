@@ -53,10 +53,20 @@ class Course(HistoricalAuditModel):
         return " ".join(parts)
 
     @property
+    def videos_price(self) -> float:
+        return sum(video.price for video in self.videos.all())
+
+    @property
+    def files_price(self) -> float:
+        return sum(file.price for file in self.files.all())
+
+    @property
+    def quizzes_price(self) -> float:
+        return sum(quizz.price for quizz in self.quizzes.all())
+
+    @property
     def price(self) -> float:
-        videos_price = sum(video.price for video in self.videos.all())
-        files_price = sum(file.price for file in self.files.all())
-        return videos_price + files_price
+        return self.videos_price + self.files_price + self.quizzes_price
 
 
 class CourseGroup(HistoricalAuditModel):
