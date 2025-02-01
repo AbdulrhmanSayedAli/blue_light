@@ -16,18 +16,26 @@ class OrderCourseCreateSerializer(serializers.ModelSerializer):
         model = OrderCourse
         fields = ["course", "include_videos", "include_files", "include_quizzes"]
 
-    def validate(self, attrs):
-        validated_data = super().validate(attrs)
-        if validated_data.get("include_videos", False):
-            if not validated_data.get("include_files", False):
+    def validate(self, data):
+        include_videos = data.get("include_videos", False)
+        include_files = data.get("include_files", False)
+        include_quizzes = data.get("include_quizzes", False)
+
+        if not (include_videos or include_files or include_quizzes):
+            raise serializers.ValidationError(
+                _("At least one of include_videos, include_files, or include_quizzes must be true.")
+            )
+
+        if include_videos:
+            if not include_files:
                 raise serializers.ValidationError(
-                    {"include_files": _("This field must be True when include_videos is True.")}
+                    {"include_files": "This field must be True when include_videos is True."}
                 )
-            if not validated_data.get("include_quizzes", False):
+            if not include_quizzes:
                 raise serializers.ValidationError(
-                    {"include_quizzes": _("This field must be True when include_videos is True.")}
+                    {"include_quizzes": "This field must be True when include_videos is True."}
                 )
-        return validated_data
+        return data
 
 
 class OrderCreateSerializer(serializers.ModelSerializer):
@@ -38,6 +46,12 @@ class OrderCreateSerializer(serializers.ModelSerializer):
         fields = ["payment_image", "payment_code", "order_courses"]
 
     payment_image = CustomImageSerializerField(allow_null=True, required=False)
+
+    def validate_order_courses(self, value):
+        """Ensure that the order_courses list is not empty."""
+        if not value:
+            raise serializers.ValidationError(_("The order_courses list cannot be empty."))
+        return value
 
     def validate(self, data):
         if not data.get("payment_image") and not data.get("payment_code"):
@@ -52,7 +66,20 @@ class OrderCreateSerializer(serializers.ModelSerializer):
 
         for oc_data in order_courses_data:
             course = oc_data["course"]
-            price = Decimal(str(course.price))
+            price = 0
+            include_videos = oc_data.get("include_videos", False)
+            include_files = oc_data.get("include_files", False)
+            include_quizzes = oc_data.get("include_quizzes", False)
+
+            if include_videos:
+                price += Decimal(str(course.videos_price))
+
+            if include_files:
+                price += Decimal(str(course.files_price))
+
+            if include_quizzes:
+                price += Decimal(str(course.quizzes_price))
+
             expires_at = timezone.now() + timedelta(days=course.duration_in_days)
             OrderCourse.objects.create(
                 order=order,
@@ -114,4 +141,7 @@ class OrderListSerializer(AuditSerializer):
             "payment_image",
             "payment_code",
             "price",
+            "order_courses",
         )
+
+    order_courses = OrderCourseSerializer(many=True)
