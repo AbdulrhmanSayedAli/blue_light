@@ -13,9 +13,13 @@ class Order(HistoricalAuditModel):
     payment_image = models.ImageField(null=True, blank=True)
     payment_code = models.TextField(null=True, blank=True)
 
+    @property
+    def price(self) -> float:
+        return sum(course.price for course in self.courses.all())
+
 
 class OrderCourse(HistoricalAuditModel):
-    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="courses")
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="order_courses")
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="order_courses")
     include_videos = models.BooleanField(default=False)
     include_files = models.BooleanField(default=False)
