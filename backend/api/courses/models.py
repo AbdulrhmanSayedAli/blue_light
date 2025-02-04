@@ -23,6 +23,14 @@ class Course(HistoricalAuditModel):
         return len(self.videos.all())
 
     @property
+    def files_count(self):
+        return len(self.files.all())
+
+    @property
+    def quizzes_count(self):
+        return len(self.quizzes.all())
+
+    @property
     def videos_duration(self):
         total_duration = self.videos.aggregate(total_duration=Sum("duration"))["total_duration"]
         return total_duration or timedelta()
