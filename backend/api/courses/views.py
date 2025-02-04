@@ -20,19 +20,18 @@ class CourseViewSet(ReadOnlyModelViewSet):
 
     def get_queryset(self):
         queryset = Course.objects.all()
-        if self.action == "retrieve":
-            queryset = (
-                queryset.prefetch_related("videos")
-                .prefetch_related("files")
-                .prefetch_related("groups")
-                .select_related("teacher")
-            )
+        queryset = (
+            queryset.prefetch_related("videos")
+            .prefetch_related("files")
+            .prefetch_related("groups")
+            .select_related("teacher")
+        )
         return queryset
 
     def get_serializer_class(self):
         if self.action == "list":
             return CourseListSerializer
-        if self.action == "retrieve":
+        if self.request.method == "GET":
             return CourseSerializer
 
     @action(detail=True, methods=["put"], url_path="favourite")
@@ -48,3 +47,10 @@ class CourseViewSet(ReadOnlyModelViewSet):
             message = "Added to favorites."
 
         return Response({"message": message}, status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=["get"], url_path="my-favourites")
+    def my_favourites(self, request, pk=None):
+        """List all courses favorited by the authenticated user."""
+        favourite_courses = Course.objects.filter(favourite_users=request.user)
+        serializer = CourseListSerializer(favourite_courses, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
