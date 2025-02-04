@@ -3,6 +3,11 @@ from .serializers import CourseSerializer, CourseListSerializer
 from rest_framework.viewsets import ReadOnlyModelViewSet
 from rest_framework import permissions
 from .filters import CourseFilter
+from django.shortcuts import get_object_or_404
+from rest_framework.views import APIView
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.decorators import action
 
 
 class CourseViewSet(ReadOnlyModelViewSet):
@@ -27,4 +32,19 @@ class CourseViewSet(ReadOnlyModelViewSet):
     def get_serializer_class(self):
         if self.action == "list":
             return CourseListSerializer
-        return CourseSerializer
+        if self.action == "retrieve":
+            return CourseSerializer
+
+    @action(detail=True, methods=["put"], url_path="favourite")
+    def toggle_favourite(self, request, pk=None):
+        """Toggle the favourite status for the authenticated user on a course."""
+        course = get_object_or_404(Course, pk=pk)
+
+        if request.user in course.favourite_users.all():
+            course.favourite_users.remove(request.user)
+            message = "Removed from favorites."
+        else:
+            course.favourite_users.add(request.user)
+            message = "Added to favorites."
+
+        return Response({"message": message}, status=status.HTTP_200_OK)

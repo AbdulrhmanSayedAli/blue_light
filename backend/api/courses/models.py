@@ -5,6 +5,7 @@ from django.core.validators import MinValueValidator
 from django.utils.translation import gettext_lazy as _
 from django.db.models import Sum
 from datetime import timedelta
+from users.models import User
 
 
 class Course(HistoricalAuditModel):
@@ -14,6 +15,7 @@ class Course(HistoricalAuditModel):
     description_video = models.URLField(null=True, blank=True)
     teacher = models.ForeignKey(User, on_delete=models.CASCADE, related_name="courses")
     duration_in_days = models.IntegerField()
+    favourite_users = models.ManyToManyField(User, related_name="favourite_courses", null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -91,7 +93,7 @@ class Video(HistoricalAuditModel):
     duration = models.DurationField(null=True, blank=True)
     image = models.ImageField(upload_to="courses/videos/", null=True, blank=True)
     url = models.URLField()
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="videos")
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True, blank=True, related_name="videos")
     group = models.ForeignKey(
         CourseGroup,
         on_delete=models.SET_NULL,
