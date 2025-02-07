@@ -1,12 +1,15 @@
-from .models import Course
-from .serializers import CourseSerializer
+from .models import Course, Quiz
+from .serializers import CourseSerializer, FullQuizSerializer
 from rest_framework.viewsets import ReadOnlyModelViewSet
+from rest_framework.generics import RetrieveAPIView
 from rest_framework import permissions
 from .filters import CourseFilter
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import action
+from rest_framework.exceptions import ValidationError
+from django.utils.translation import gettext_lazy as _
 
 
 class CourseViewSet(ReadOnlyModelViewSet):
@@ -54,3 +57,19 @@ class CourseViewSet(ReadOnlyModelViewSet):
         favourite_courses = Course.objects.filter(favourite_users=request.user)
         serializer = CourseSerializer(favourite_courses, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class QuizzAPIView(RetrieveAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    model = Quiz
+    queryset = Quiz.objects.all()
+    serializer_class = FullQuizSerializer
+
+    def get_object(self):
+        user = self.request.user
+        quiz = super().get_object()
+
+        if quiz.is_public or quiz.course.is_buyed_quizzes(user):
+            return quiz
+
+        raise ValidationError(_("You don't have permission to access this quizz."))
