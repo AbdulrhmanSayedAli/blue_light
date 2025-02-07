@@ -3,6 +3,7 @@ from .models import AD, Section
 from .serializers import ADSerializer, SectionSerializer, HomeSerializer
 from rest_framework.response import Response
 from rest_framework import generics
+from rest_framework import permissions
 
 
 class ADViewSet(ReadOnlyModelViewSet):
@@ -16,11 +17,13 @@ class SectionViewSet(ReadOnlyModelViewSet):
     model = Section
     queryset = Section.objects.all()
     serializer_class = SectionSerializer
+    permission_classes = [permissions.IsAuthenticated]
     filter_backends = []
 
 
 class HomeAPIView(generics.GenericAPIView):
     serializer_class = HomeSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
         sections = Section.objects.all()

@@ -158,6 +158,7 @@ class CourseSerializer(AuditSerializer):
             "is_buyed_files",
             "is_buyed_viedos",
             "is_buyed_quizzes",
+            "is_favourite",
         )
 
     teacher = GetUserSerializer()
@@ -168,6 +169,7 @@ class CourseSerializer(AuditSerializer):
     is_buyed_files = serializers.SerializerMethodField()
     is_buyed_viedos = serializers.SerializerMethodField()
     is_buyed_quizzes = serializers.SerializerMethodField()
+    is_favourite = serializers.SerializerMethodField()
 
     def get_is_buyed_viedos(self, instance) -> bool:
         return instance.is_buyed_viedos(self.context["request"].user)
@@ -177,6 +179,9 @@ class CourseSerializer(AuditSerializer):
 
     def get_is_buyed_quizzes(self, instance) -> bool:
         return instance.is_buyed_quizzes(self.context["request"].user)
+
+    def get_is_favourite(self, instance) -> bool:
+        return instance.is_favourite(self.context["request"].user)
 
     def get_groups(self, instance) -> list:
         if self.get_is_buyed_viedos(instance):

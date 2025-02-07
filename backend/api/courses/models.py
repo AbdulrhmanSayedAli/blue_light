@@ -52,6 +52,9 @@ class Course(HistoricalAuditModel):
             return False
         return user_order_course.include_quizzes
 
+    def is_favourite(self, user: User):
+        return user in self.favourite_users.all()
+
     @property
     def videos_count(self):
         return len(self.videos.all())
