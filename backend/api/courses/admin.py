@@ -1,29 +1,29 @@
 from django.contrib import admin
 from common.audit.admin import AuditModelAdmin
 from .models import Course, CourseGroup, Video, File, Quiz, Question, Answer
-from nested_inline.admin import NestedTabularInline, NestedModelAdmin
+from nested_inline.admin import NestedModelAdmin, NestedStackedInline
 
 
-class AnswerInline(NestedTabularInline):
+class AnswerInline(NestedStackedInline):
     model = Answer
     extra = 1
     fields = ["text", "is_true_answer"]
 
 
-class QuestionInline(NestedTabularInline):
+class QuestionInline(NestedStackedInline):
     model = Question
     extra = 1
     fields = ["text"]
     inlines = [AnswerInline]
 
 
-class VideoInline(NestedTabularInline):
+class VideoInline(NestedStackedInline):
     model = Video
     extra = 1
     fields = ["name", "url", "price"]
 
 
-class CourseGroupnline(NestedTabularInline):
+class CourseGroupnline(NestedStackedInline):
     model = CourseGroup
     extra = 1
     fields = [
@@ -33,13 +33,13 @@ class CourseGroupnline(NestedTabularInline):
     inlines = [VideoInline]
 
 
-class FileInline(NestedTabularInline):
+class FileInline(NestedStackedInline):
     model = File
     extra = 1
     fields = ["name", "file", "price"]
 
 
-class QuizInline(NestedTabularInline):
+class QuizInline(NestedStackedInline):
     model = Quiz
     extra = 1
     fields = ["name", "info_title", "price"]
