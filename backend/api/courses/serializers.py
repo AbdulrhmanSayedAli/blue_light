@@ -24,6 +24,8 @@ class VideoSerializer(AuditSerializer):
     image = CustomImageSerializerField()
 
     def get_url(self, instance):
+        if instance.is_public:
+            return instance.url
         return ""
 
 
@@ -71,6 +73,10 @@ class FileSerializer(AuditSerializer):
     image = CustomImageSerializerField()
 
     def get_file(self, instance):
+        if instance.is_public:
+            file_field = CustomFileSerializerField(use_url=True)
+            file_field._context = self.context
+            return file_field.to_representation(instance.file)
         return ""
 
 
