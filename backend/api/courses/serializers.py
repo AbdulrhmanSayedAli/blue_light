@@ -1,7 +1,8 @@
 from common.audit.serializer import AuditSerializer
 from .models import Course, CourseGroup, Video, File, Quiz
 from users.serializers import GetUserSerializer
-from common.rest_framework.serializers import CustomImageSerializerField
+from common.rest_framework.serializers import CustomImageSerializerField, CustomFileSerializerField
+from rest_framework import serializers
 
 
 class VideoSerializer(AuditSerializer):
@@ -21,6 +22,11 @@ class VideoSerializer(AuditSerializer):
     image = CustomImageSerializerField()
 
 
+class FullVideoSerializer(VideoSerializer):
+    class Meta(VideoSerializer.Meta):
+        fields = VideoSerializer.Meta.fields + ("url",)
+
+
 class CourseGroupSerializer(AuditSerializer):
     class Meta:
         model = CourseGroup
@@ -31,6 +37,13 @@ class CourseGroupSerializer(AuditSerializer):
         )
 
     videos = VideoSerializer(many=True)
+
+
+class FullCourseGroupSerializer(CourseGroupSerializer):
+    class Meta(CourseGroupSerializer.Meta):
+        pass
+
+    videos = FullVideoSerializer(many=True)
 
 
 class FileSerializer(AuditSerializer):
@@ -47,6 +60,13 @@ class FileSerializer(AuditSerializer):
         )
 
     image = CustomImageSerializerField()
+
+
+class FullFileSerializer(FileSerializer):
+    class Meta(FileSerializer.Meta):
+        fields = FileSerializer.Meta.fields + ("file",)
+
+    file = CustomFileSerializerField()
 
 
 class QuizSerializer(AuditSerializer):
@@ -88,36 +108,61 @@ class CourseSerializer(AuditSerializer):
             "videos_count",
             "files_count",
             "quizzes_count",
+            "is_buyed_files",
+            "is_buyed_viedos",
+            "is_buyed_quizzes",
         )
 
     teacher = GetUserSerializer()
     image = CustomImageSerializerField()
-    groups = CourseGroupSerializer(many=True)
-    files = FileSerializer(many=True)
+    groups = serializers.SerializerMethodField()
+    files = serializers.SerializerMethodField()
     quizzes = QuizSerializer(many=True)
+    is_buyed_files = serializers.SerializerMethodField()
+    is_buyed_viedos = serializers.SerializerMethodField()
+    is_buyed_quizzes = serializers.SerializerMethodField()
+
+    def get_is_buyed_viedos(self, instance) -> bool:
+        return instance.is_buyed_viedos(self.context["request"].user)
+
+    def get_is_buyed_files(self, instance) -> bool:
+        return instance.is_buyed_files(self.context["request"].user)
+
+    def get_is_buyed_quizzes(self, instance) -> bool:
+        return instance.is_buyed_quizzes(self.context["request"].user)
+
+    def get_groups(self, instance) -> list:
+        if self.get_is_buyed_viedos(instance):
+            return FullCourseGroupSerializer(instance.groups, many=True, context=self.context).data
+        return CourseGroupSerializer(instance.groups, many=True, context=self.context).data
+
+    def get_files(self, instance) -> list:
+        if self.get_is_buyed_files(instance):
+            return FullFileSerializer(instance.files, many=True, context=self.context).data
+        return FileSerializer(instance.files, many=True, context=self.context).data
 
 
-class CourseListSerializer(AuditSerializer):
-    class Meta:
-        model = Course
-        fields = (
-            "id",
-            "name",
-            "image",
-            "description",
-            "description_video",
-            "teacher",
-            "duration_in_days",
-            "price",
-            "videos_price",
-            "files_price",
-            "quizzes_price",
-            "videos_duration",
-            "videos_duration_human_readable",
-            "videos_count",
-            "files_count",
-            "quizzes_count",
-        )
+# class CourseListSerializer(AuditSerializer):
+#     class Meta:
+#         model = Course
+#         fields = (
+#             "id",
+#             "name",
+#             "image",
+#             "description",
+#             "description_video",
+#             "teacher",
+#             "duration_in_days",
+#             "price",
+#             "videos_price",
+#             "files_price",
+#             "quizzes_price",
+#             "videos_duration",
+#             "videos_duration_human_readable",
+#             "videos_count",
+#             "files_count",
+#             "quizzes_count",
+#         )
 
-    teacher = GetUserSerializer()
-    image = CustomImageSerializerField()
+#     teacher = GetUserSerializer()
+#     image = CustomImageSerializerField()

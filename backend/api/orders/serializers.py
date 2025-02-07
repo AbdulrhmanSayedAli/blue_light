@@ -4,7 +4,7 @@ from users.serializers import GetUserSerializer
 from common.rest_framework.serializers import CustomImageSerializerField
 from rest_framework import serializers
 from django.utils.translation import gettext_lazy as _
-from courses.serializers import CourseListSerializer
+from courses.serializers import CourseSerializer
 from datetime import timedelta
 from decimal import Decimal
 from django.utils import timezone
@@ -111,7 +111,7 @@ class OrderCourseSerializer(AuditSerializer):
             "is_expired",
         )
 
-    course = CourseListSerializer()
+    course = CourseSerializer()
 
 
 class OrderSerializer(AuditSerializer):

@@ -6,6 +6,8 @@ from django.utils.translation import gettext_lazy as _
 from django.db.models import Sum
 from datetime import timedelta
 from users.models import User
+from django.utils.timezone import now
+from enums.enums import PaymentStatus
 
 
 class Course(HistoricalAuditModel):
@@ -19,6 +21,36 @@ class Course(HistoricalAuditModel):
 
     def __str__(self):
         return self.name
+
+    def get_user_order_course(self, user: User):
+        from orders.models import OrderCourse
+
+        user_order_course = OrderCourse.objects.filter(
+            order__user=user, course=self, order__payment_status=PaymentStatus.ACCEPTED, expires_at__gte=now()
+        )
+
+        if user_order_course.exists():
+            return user_order_course.first()
+
+        return None
+
+    def is_buyed_viedos(self, user: User):
+        user_order_course = self.get_user_order_course(user)
+        if not user_order_course:
+            return False
+        return user_order_course.include_videos
+
+    def is_buyed_files(self, user: User):
+        user_order_course = self.get_user_order_course(user)
+        if not user_order_course:
+            return False
+        return user_order_course.include_files
+
+    def is_buyed_quizzes(self, user: User):
+        user_order_course = self.get_user_order_course(user)
+        if not user_order_course:
+            return False
+        return user_order_course.include_quizzes
 
     @property
     def videos_count(self):

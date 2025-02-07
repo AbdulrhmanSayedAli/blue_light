@@ -1,10 +1,9 @@
 from .models import Course
-from .serializers import CourseSerializer, CourseListSerializer
+from .serializers import CourseSerializer
 from rest_framework.viewsets import ReadOnlyModelViewSet
 from rest_framework import permissions
 from .filters import CourseFilter
 from django.shortcuts import get_object_or_404
-from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import action
@@ -24,15 +23,16 @@ class CourseViewSet(ReadOnlyModelViewSet):
             queryset.prefetch_related("videos")
             .prefetch_related("files")
             .prefetch_related("groups")
+            .prefetch_related("quizzes")
             .select_related("teacher")
         )
         return queryset
 
     def get_serializer_class(self):
-        if self.action == "list" or self.action == "my_favourites":
-            return CourseListSerializer
-        if self.action == "retrieve":
-            return CourseSerializer
+        # if self.action == "list" or self.action == "my_favourites":
+        #     return CourseListSerializer
+        # if self.action == "retrieve":
+        return CourseSerializer
 
     @action(detail=True, methods=["put"], url_path="favourite")
     def toggle_favourite(self, request, pk=None):
@@ -52,5 +52,5 @@ class CourseViewSet(ReadOnlyModelViewSet):
     def my_favourites(self, request, pk=None):
         """List all courses favorited by the authenticated user."""
         favourite_courses = Course.objects.filter(favourite_users=request.user)
-        serializer = CourseListSerializer(favourite_courses, many=True)
+        serializer = CourseSerializer(favourite_courses, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
