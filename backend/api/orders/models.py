@@ -5,6 +5,9 @@ from enums.enums import PaymentStatus
 from courses.models import Course
 from django.core.validators import MinValueValidator
 from django.utils.timezone import now
+import random
+import string
+from common.model_fields.decimal import PercentageField
 
 
 class Order(HistoricalAuditModel):
@@ -12,6 +15,7 @@ class Order(HistoricalAuditModel):
     payment_status = models.IntegerField(choices=PaymentStatus.choices, default=PaymentStatus.PENDING)
     payment_image = models.ImageField(null=True, blank=True)
     payment_code = models.TextField(null=True, blank=True)
+    coupon_code = models.CharField(max_length=50, null=True, blank=True)
 
     @property
     def price(self) -> float:
@@ -31,3 +35,14 @@ class OrderCourse(HistoricalAuditModel):
     def is_expired(self):
         """Returns True if the expiration time has passed, False otherwise."""
         return self.expires_at < now()
+
+
+def generate_coupon_code(length=10) -> str:
+    characters = string.ascii_uppercase + string.digits  # A-Z and 0-9
+    return "".join(random.choices(characters, k=length))
+
+
+class Coupon(HistoricalAuditModel):
+    code = models.CharField(max_length=50, default=generate_coupon_code)
+    percentage = PercentageField()
+    number_of_uses = models.IntegerField(default=1, validators=[MinValueValidator(0)])

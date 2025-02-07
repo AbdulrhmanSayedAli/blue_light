@@ -1,7 +1,7 @@
 from django.contrib import admin
 from common.audit.admin import AuditModelAdmin
 from nested_inline.admin import NestedStackedInline, NestedModelAdmin
-from .models import Order, OrderCourse
+from .models import Order, OrderCourse, Coupon
 
 
 class OrderCourseInline(NestedStackedInline):
@@ -20,3 +20,8 @@ class OrderCourseInline(NestedStackedInline):
 @admin.register(Order)
 class OrderAdmin(NestedModelAdmin, AuditModelAdmin):
     inlines = [OrderCourseInline]
+
+
+@admin.register(Coupon)
+class CouponAdmin(AuditModelAdmin):
+    pass

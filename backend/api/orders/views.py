@@ -1,8 +1,11 @@
 from rest_framework.viewsets import ModelViewSet
+from rest_framework.generics import RetrieveAPIView
 from rest_framework import permissions
-from .models import Order
-from .serializers import OrderSerializer, OrderListSerializer, OrderCreateSerializer
+from .models import Order, Coupon
+from .serializers import OrderSerializer, OrderListSerializer, OrderCreateSerializer, CouponSerializer
 from .filters import OrderFilter
+from rest_framework import status
+from rest_framework.response import Response
 
 
 class OrderViewSet(ModelViewSet):
@@ -26,3 +29,9 @@ class OrderViewSet(ModelViewSet):
             return OrderListSerializer
 
         return OrderSerializer
+
+
+class CheckCouponView(RetrieveAPIView):
+    lookup_field = "code"
+    queryset = Coupon.objects.all()
+    serializer_class = CouponSerializer

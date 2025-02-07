@@ -1,5 +1,5 @@
 from common.audit.serializer import AuditSerializer
-from .models import Order, OrderCourse
+from .models import Order, OrderCourse, Coupon
 from users.serializers import GetUserSerializer
 from common.rest_framework.serializers import CustomImageSerializerField
 from rest_framework import serializers
@@ -9,6 +9,12 @@ from datetime import timedelta
 from decimal import Decimal
 from django.utils import timezone
 from rest_framework import serializers
+
+
+class CouponSerializer(AuditSerializer):
+    class Meta:
+        model = Coupon
+        fields = ["id", "code", "percentage"]
 
 
 class OrderCourseCreateSerializer(serializers.ModelSerializer):
@@ -43,9 +49,14 @@ class OrderCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Order
-        fields = ["payment_image", "payment_code", "order_courses"]
+        fields = ["payment_image", "payment_code", "order_courses", "coupon_code"]
 
     payment_image = CustomImageSerializerField(allow_null=True, required=False)
+
+    def validate_coupon_code(self, value):
+        if Coupon.objects.filter(code=value, number_of_uses__gte=1).exists():
+            return value
+        raise serializers.ValidationError(_("Invalid Coupon Code."))
 
     def validate_order_courses(self, value):
         """Ensure that the order_courses list is not empty."""
@@ -60,6 +71,10 @@ class OrderCreateSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         order_courses_data = validated_data.pop("order_courses")
+        coupon_code = validated_data.get("coupon_code", None)
+        coupon = None
+        if coupon_code:
+            coupon = Coupon.objects.get(code=coupon_code)
         user = self.context["request"].user
 
         order = Order.objects.create(user=user, **validated_data)
@@ -80,6 +95,9 @@ class OrderCreateSerializer(serializers.ModelSerializer):
             if include_quizzes:
                 price += Decimal(str(course.quizzes_price))
 
+            if coupon:
+                price = price - (price * (coupon.percentage / 100))
+
             expires_at = timezone.now() + timedelta(days=course.duration_in_days)
             OrderCourse.objects.create(
                 order=order,
@@ -90,6 +108,10 @@ class OrderCreateSerializer(serializers.ModelSerializer):
                 price=price,
                 expires_at=expires_at,
             )
+
+        if coupon:
+            coupon.number_of_uses = coupon.number_of_uses - 1
+            coupon.save()
 
         return order
 
@@ -125,6 +147,7 @@ class OrderSerializer(AuditSerializer):
             "payment_code",
             "price",
             "order_courses",
+            "coupon_code",
         )
 
     user = GetUserSerializer()
