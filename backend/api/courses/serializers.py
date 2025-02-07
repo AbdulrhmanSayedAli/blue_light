@@ -17,14 +17,21 @@ class VideoSerializer(AuditSerializer):
             "info",
             "price",
             "is_public",
+            "url",
         )
 
+    url = serializers.SerializerMethodField()
     image = CustomImageSerializerField()
+
+    def get_url(self, instance):
+        return ""
 
 
 class FullVideoSerializer(VideoSerializer):
     class Meta(VideoSerializer.Meta):
-        fields = VideoSerializer.Meta.fields + ("url",)
+        pass
+
+    url = serializers.URLField()
 
 
 class CourseGroupSerializer(AuditSerializer):
@@ -57,14 +64,19 @@ class FileSerializer(AuditSerializer):
             "info",
             "price",
             "is_public",
+            "file",
         )
 
+    file = serializers.SerializerMethodField()
     image = CustomImageSerializerField()
+
+    def get_file(self, instance):
+        return ""
 
 
 class FullFileSerializer(FileSerializer):
     class Meta(FileSerializer.Meta):
-        fields = FileSerializer.Meta.fields + ("file",)
+        pass
 
     file = CustomFileSerializerField()
 
