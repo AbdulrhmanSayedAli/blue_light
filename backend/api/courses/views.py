@@ -55,7 +55,7 @@ class CourseViewSet(ReadOnlyModelViewSet):
     def my_favourites(self, request, pk=None):
         """List all courses favorited by the authenticated user."""
         favourite_courses = Course.objects.filter(favourite_users=request.user)
-        serializer = CourseSerializer(favourite_courses, many=True)
+        serializer = CourseSerializer(favourite_courses, many=True, context={"request": request})
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
