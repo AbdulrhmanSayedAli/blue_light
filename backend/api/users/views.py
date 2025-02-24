@@ -15,8 +15,9 @@ from django.utils.translation import gettext_lazy as _
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from myauth.views import createToken
-from rest_framework.generics import UpdateAPIView, RetrieveAPIView
+from rest_framework.generics import UpdateAPIView, RetrieveAPIView, CreateAPIView
 from rest_framework.permissions import IsAuthenticated
+from .serializers import DeviceSerializer
 
 
 class CityViewSet(ReadOnlyModelViewSet):
@@ -92,3 +93,11 @@ class ProfileView(RetrieveAPIView, UpdateAPIView):
 
     def get_object(self):
         return self.request.user
+
+
+class DeviceCreateView(CreateAPIView):
+    serializer_class = DeviceSerializer
+    permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)

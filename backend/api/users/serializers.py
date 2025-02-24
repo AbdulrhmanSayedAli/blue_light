@@ -10,6 +10,7 @@ from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError
 from django.contrib.auth.hashers import make_password
 from common.rest_framework.serializers import CustomImageSerializerField
+from fcm_django.models import FCMDevice
 
 
 class CitySerializer(AuditSerializer):
@@ -149,3 +150,10 @@ class ChangePasswordSerializer(AuditSerializer):
 
     def to_representation(self, user):
         return GetUserSerializer(user, context=self.context).data
+
+
+class DeviceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FCMDevice
+        fields = ("id", "registration_id", "type", "user")
+        read_only_fields = ("id", "user")

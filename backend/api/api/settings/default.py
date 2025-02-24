@@ -66,6 +66,7 @@ INSTALLED_APPS = [
     "uploader",
     "orders",
     "rates",
+    "fcm_django",
 ]
 
 MIDDLEWARE = [
@@ -274,6 +275,13 @@ AUTO_COMPLETE_PARAM = "autocomplete"
 SEARCH_PARAM = "search"
 
 
+FCM_SERVER_KEY = env("FCM_SERVER_KEY")
+FCM_DJANGO_SETTINGS = {
+    "FCM_SERVER_KEY": FCM_SERVER_KEY,
+    # optional settings
+    "ONE_DEVICE_PER_USER": False,
+    "DELETE_INACTIVE_DEVICES": False,
+}
 if DEBUG:
     INSTALLED_APPS += ["debug_toolbar"]
     MIDDLEWARE += ["debug_toolbar.middleware.DebugToolbarMiddleware"]
