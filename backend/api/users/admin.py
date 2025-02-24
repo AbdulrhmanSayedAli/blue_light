@@ -8,6 +8,7 @@ from django.shortcuts import render, redirect
 from django import forms
 from fcm_django.models import FCMDevice
 from firebase_admin import messaging
+from notifications.models import Notification
 
 
 class NotificationForm(forms.Form):
@@ -24,11 +25,12 @@ def send_custom_notification(modeladmin, request, queryset):
             title = form.cleaned_data["title"]
             message = form.cleaned_data["message"]
             devices = FCMDevice.objects.filter(user__in=queryset)
-            print(title, message)
             if devices.exists():
                 devices.send_message(
                     message=messaging.Message(notification=messaging.Notification(title=title, body=message))
                 )
+                for user in queryset:
+                    Notification.objects.create(user=user, title=title, body=message)
                 messages.success(request, f"Notification sent to {devices.count()} device(s).")
             else:
                 messages.warning(request, "No devices found for selected users.")

@@ -67,6 +67,7 @@ INSTALLED_APPS = [
     "orders",
     "rates",
     "fcm_django",
+    "notifications",
 ]
 
 MIDDLEWARE = [
