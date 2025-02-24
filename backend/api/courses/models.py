@@ -1,4 +1,4 @@
-from common.audit.models import HistoricalAuditModel
+from common.audit.models import HistoricalAuditModel, AuditModel
 from django.db import models
 from users.models import User
 from django.core.validators import MinValueValidator
@@ -10,7 +10,7 @@ from django.utils.timezone import now
 from enums.enums import PaymentStatus
 
 
-class Course(HistoricalAuditModel):
+class Course(AuditModel):
     name = models.CharField(max_length=300)
     description = models.TextField()
     image = models.ImageField(upload_to="courses/")
@@ -114,7 +114,7 @@ class Course(HistoricalAuditModel):
         return self.videos_price + self.files_price + self.quizzes_price
 
 
-class CourseGroup(HistoricalAuditModel):
+class CourseGroup(AuditModel):
     name = models.CharField(max_length=300)
     image = models.ImageField(null=True, blank=True)
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="groups")
@@ -123,7 +123,7 @@ class CourseGroup(HistoricalAuditModel):
         return self.name
 
 
-class Video(HistoricalAuditModel):
+class Video(AuditModel):
     name = models.CharField(max_length=300)
     duration = models.DurationField(null=True, blank=True)
     image = models.ImageField(upload_to="courses/videos/", null=True, blank=True)
@@ -144,7 +144,7 @@ class Video(HistoricalAuditModel):
         return self.name
 
 
-class File(HistoricalAuditModel):
+class File(AuditModel):
     name = models.CharField(max_length=300)
     pages_count = models.IntegerField(default=0, null=True, blank=True, validators=[MinValueValidator(0)])
     image = models.ImageField(upload_to="courses/files/", null=True, blank=True)
@@ -158,7 +158,7 @@ class File(HistoricalAuditModel):
         return self.name
 
 
-class Quiz(HistoricalAuditModel):
+class Quiz(AuditModel):
     name = models.CharField(max_length=300)
     image = models.ImageField(upload_to="courses/quizzes/", null=True, blank=True)
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="quizzes")

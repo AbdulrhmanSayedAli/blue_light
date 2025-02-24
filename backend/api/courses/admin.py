@@ -20,14 +20,15 @@ class QuestionInline(NestedStackedInline):
 class VideoInline(NestedStackedInline):
     model = Video
     extra = 1
-    fields = ["name", "url", "price"]
+    fields = ["name_en", "name_ar", "url", "price"]
 
 
 class CourseGroupnline(NestedStackedInline):
     model = CourseGroup
     extra = 1
     fields = [
-        "name",
+        "name_en",
+        "name_ar",
         "image",
     ]
     inlines = [VideoInline]
@@ -36,13 +37,13 @@ class CourseGroupnline(NestedStackedInline):
 class FileInline(NestedStackedInline):
     model = File
     extra = 1
-    fields = ["name", "file", "price"]
+    fields = ["name_en", "name_ar", "file", "price"]
 
 
 class QuizInline(NestedStackedInline):
     model = Quiz
     extra = 1
-    fields = ["name", "info_title", "price"]
+    fields = ["name_en", "name_ar", "info_title", "price"]
     inlines = [QuestionInline]
 
 
