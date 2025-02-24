@@ -29,6 +29,7 @@ urlpatterns = (
         path("api/enums/", include("enums.urls")),
         path("api/orders/", include("orders.urls")),
         path("api/rates/", include("rates.urls")),
+        path("api/notifications/", include("notifications.urls")),
         path("swagger/", schema_view.with_ui("swagger", cache_timeout=0), name="schema-swagger-ui"),
     ]
     + staticfiles_urlpatterns()
