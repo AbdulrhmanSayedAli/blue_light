@@ -108,7 +108,7 @@ LOCALE_PATHS = (os.path.join(BASE_DIR, "locale"),)
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": ["templates"],
+        "DIRS": [os.path.join(BASE_DIR, "templates")],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -282,6 +282,15 @@ FCM_DJANGO_SETTINGS = {
     "ONE_DEVICE_PER_USER": False,
     "DELETE_INACTIVE_DEVICES": False,
 }
+
+FIREBASE_CRED_PATH = os.path.join(BASE_DIR, "firebase-adminsdk.json")
+import firebase_admin
+from firebase_admin import credentials
+
+if not firebase_admin._apps:
+    cred = credentials.Certificate(FIREBASE_CRED_PATH)
+    firebase_admin.initialize_app(cred)
+
 if DEBUG:
     INSTALLED_APPS += ["debug_toolbar"]
     MIDDLEWARE += ["debug_toolbar.middleware.DebugToolbarMiddleware"]
