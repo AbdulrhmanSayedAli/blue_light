@@ -8,6 +8,7 @@ from .views import (
     ChangePasswordView,
     ProfileView,
     DeviceCreateView,
+    ForgotPasswordView,
 )
 
 router = DefaultRouter()
@@ -19,6 +20,7 @@ urlpatterns = [
     path("", include(router.urls)),
     path("register", RegisterView.as_view(), name="register"),
     path("change-password/", ChangePasswordView.as_view(), name="change-password"),
+    path("forgot-password/", ForgotPasswordView.as_view(), name="forgot-password"),
     path("profile/", ProfileView.as_view(), name="profile"),
     path("register-device/", DeviceCreateView.as_view(), name="register-device"),
 ]

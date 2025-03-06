@@ -11,6 +11,7 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth.hashers import make_password
 from common.rest_framework.serializers import CustomImageSerializerField
 from fcm_django.models import FCMDevice
+from phonenumber_field.serializerfields import PhoneNumberField
 
 
 class CitySerializer(AuditSerializer):
@@ -157,3 +158,44 @@ class DeviceSerializer(serializers.ModelSerializer):
         model = FCMDevice
         fields = ("id", "registration_id", "type", "user")
         read_only_fields = ("id", "user")
+
+
+class ForgotPasswordSerializer(AuditSerializer):
+    class Meta:
+        model = User
+        fields = (
+            "phone_number",
+            "device_id",
+            "new_password",
+        )
+
+    phone_number = PhoneNumberField(
+        required=True,
+    )
+    device_id = serializers.CharField(
+        max_length=255,
+        required=True,
+    )
+    new_password = serializers.CharField(
+        required=True,
+        write_only=True,
+    )
+
+    def validate_new_password(self, value):
+        django_validate_password(value)
+        return value
+
+    def validate(self, attrs):
+        attrs = super().validate(attrs)
+        phone_number = attrs.pop("phone_number")
+        device_id = attrs.pop("device_id")
+        new_password = attrs.pop("new_password")
+
+        # Ensure all required fields are provided
+        if not phone_number or not device_id or not new_password:
+            raise serializers.ValidationError(_("Phone number, device ID, and new_password are required."))
+        attrs["password"] = make_password(new_password)
+        return attrs
+
+    def to_representation(self, user):
+        return GetUserSerializer(user, context=self.context).data

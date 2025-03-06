@@ -7,6 +7,7 @@ from users.serializers import (
     SpecializationSerializer,
     ChangePasswordSerializer,
     ProfileSerializer,
+    ForgotPasswordSerializer,
 )
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -16,8 +17,10 @@ from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from myauth.views import createToken
 from rest_framework.generics import UpdateAPIView, RetrieveAPIView, CreateAPIView
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from .serializers import DeviceSerializer
+from .models import User
+from rest_framework.serializers import ValidationError
 
 
 class CityViewSet(ReadOnlyModelViewSet):
@@ -85,6 +88,33 @@ class ChangePasswordView(UpdateAPIView):
 
     def get_object(self):
         return self.request.user
+
+
+class ForgotPasswordView(UpdateAPIView):
+    permission_classes = [AllowAny]
+    http_method_names = ["put"]
+    serializer_class = ForgotPasswordSerializer
+
+    def update(self, request, *args, **kwargs):
+        user = self.get_object()
+        serializer = self.get_serializer(user, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def get_object(self):
+        data = self.request.data
+        phone_number = data.get("phone_number", None)
+        device_id = data.get("device_id", None)
+        user = User.objects.filter(phone_number=phone_number)
+        if not user.exists():
+            raise ValidationError("user not found")
+        user = user.first()
+        if user.device_id != device_id:
+            raise ValidationError("user id doesnt match")
+        print(user)
+        return user
 
 
 class ProfileView(RetrieveAPIView, UpdateAPIView):

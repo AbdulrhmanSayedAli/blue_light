@@ -131,6 +131,8 @@ class OrderCourseSerializer(AuditSerializer):
             "price",
             "expires_at",
             "is_expired",
+            "price_before_coupon",
+            "created_at",
         )
 
     course = CourseSerializer()
@@ -148,6 +150,9 @@ class OrderSerializer(AuditSerializer):
             "price",
             "order_courses",
             "coupon_code",
+            "price_before_coupon",
+            "coupon_percentage",
+            "created_at",
         )
 
     user = GetUserSerializer()
@@ -165,6 +170,9 @@ class OrderListSerializer(AuditSerializer):
             "payment_code",
             "price",
             "order_courses",
+            "price_before_coupon",
+            "coupon_percentage",
+            "created_at",
         )
 
     order_courses = OrderCourseSerializer(many=True)
