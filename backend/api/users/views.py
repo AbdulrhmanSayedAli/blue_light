@@ -139,7 +139,5 @@ class DeleteAccountView(APIView):
 
     def delete(self, request):
         user = request.user
-        user.history.all().delete()
         user.delete()
-        user.delete(force_policy=HARD_DELETE)
         return Response({"message": "Account deleted successfully"}, status=status.HTTP_204_NO_CONTENT)

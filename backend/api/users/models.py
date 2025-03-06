@@ -37,13 +37,13 @@ class City(HistoricalAuditModel):
 
 
 class User(AbstractUser, AuditModel):
-    phone_number = PhoneNumberField(null=True, blank=True, unique=True)
+    phone_number = PhoneNumberField(null=True, blank=True)
     univeristy = models.ForeignKey(Univeristy, on_delete=models.SET_NULL, null=True, blank=True, related_name="users")
     specialization = models.ForeignKey(
         Specialization, on_delete=models.SET_NULL, null=True, blank=True, related_name="users"
     )
     city = models.ForeignKey(City, on_delete=models.SET_NULL, null=True, blank=True, related_name="users")
-    device_id = models.CharField(max_length=300, unique=True)
+    device_id = models.CharField(max_length=300)
     full_name = models.CharField(max_length=300, default="")
     image = models.ImageField(upload_to="users/", null=True, blank=True)
     type = models.IntegerField(choices=UserType.choices, default=UserType.STUDENT)

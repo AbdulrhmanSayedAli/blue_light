@@ -1,3 +1,4 @@
+from common.code_generation import generate_code
 from common.audit.serializer import AuditSerializer
 from users.models import City, Univeristy, Specialization, User, Experience
 from common.rest_framework.serializers import CustomImageSerializerField
@@ -98,9 +99,21 @@ class RegisterSerializer(AuditSerializer):
         }
 
     def create(self, validated_data):
-        validated_data["username"] = validated_data["device_id"]
+        validated_data["username"] = f"{validated_data['device_id']}{generate_code(11)}"
         user = User.objects.create_user(**validated_data)
         return user
+
+    def validate_phone_number(self, phone_number):
+        temp = User.objects.filter(phone_number=phone_number)
+        if temp.exists():
+            raise serializers.ValidationError(_("user with this phone_number already exists."))
+        return phone_number
+
+    def validate_device_id(self, device_id):
+        temp = User.objects.filter(device_id=device_id)
+        if temp.exists():
+            raise serializers.ValidationError(_("user with this device_id already exists."))
+        return device_id
 
     def to_representation(self, instance):
         return GetUserSerializer(instance, context=self.context).data
