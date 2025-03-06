@@ -21,6 +21,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from .serializers import DeviceSerializer
 from .models import User
 from rest_framework.serializers import ValidationError
+from safedelete.models import HARD_DELETE
 
 
 class CityViewSet(ReadOnlyModelViewSet):
@@ -131,3 +132,14 @@ class DeviceCreateView(CreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+
+class DeleteAccountView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request):
+        user = request.user
+        user.history.all().delete()
+        user.delete()
+        user.delete(force_policy=HARD_DELETE)
+        return Response({"message": "Account deleted successfully"}, status=status.HTTP_204_NO_CONTENT)

@@ -1,8 +1,9 @@
 from django.db import models
 from enums.enums import UserType
-from common.audit.models import HistoricalAuditModel
+from common.audit.models import HistoricalAuditModel, AuditModel
 from django.contrib.auth.models import AbstractUser
 from phonenumber_field.modelfields import PhoneNumberField
+from simple_history.models import HistoricalRecords
 
 
 class Univeristy(HistoricalAuditModel):
@@ -35,7 +36,7 @@ class City(HistoricalAuditModel):
         verbose_name_plural = "Cities"
 
 
-class User(AbstractUser, HistoricalAuditModel):
+class User(AbstractUser, AuditModel):
     phone_number = PhoneNumberField(null=True, blank=True, unique=True)
     univeristy = models.ForeignKey(Univeristy, on_delete=models.SET_NULL, null=True, blank=True, related_name="users")
     specialization = models.ForeignKey(
@@ -48,6 +49,8 @@ class User(AbstractUser, HistoricalAuditModel):
     type = models.IntegerField(choices=UserType.choices, default=UserType.STUDENT)
     whatsapp = PhoneNumberField(null=True, blank=True)
     about = models.TextField(null=True, blank=True)
+
+    history = HistoricalRecords(cascade_delete_history=True)
 
     def __str__(self):
         return self.full_name

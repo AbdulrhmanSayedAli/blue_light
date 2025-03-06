@@ -9,6 +9,7 @@ from .views import (
     ProfileView,
     DeviceCreateView,
     ForgotPasswordView,
+    DeleteAccountView,
 )
 
 router = DefaultRouter()
@@ -23,4 +24,5 @@ urlpatterns = [
     path("forgot-password/", ForgotPasswordView.as_view(), name="forgot-password"),
     path("profile/", ProfileView.as_view(), name="profile"),
     path("register-device/", DeviceCreateView.as_view(), name="register-device"),
+    path("account/", DeleteAccountView.as_view(), name="delete-account"),
 ]
